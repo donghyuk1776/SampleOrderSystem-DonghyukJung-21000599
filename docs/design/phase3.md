@@ -39,7 +39,11 @@ class ProductionJob:
     shortage_quantity: int        # 부족분
     actual_quantity: int          # 실생산량 = ceil(shortage_quantity / yield_rate)
     total_production_time: float  # = avg_production_time * actual_quantity
-    status: str = "PENDING"       # PENDING -> IN_PROGRESS -> DONE (표기 목적, 자율 설계)
+    status: str = "PENDING"       # 표기용 필드. process_next()가 "다음 생산 완료 처리"를
+                                   # 즉시 완결시키는 설계이므로 큐에 있는 동안은 항상 PENDING
+                                   # 이며 별도 IN_PROGRESS/DONE 전이는 없다. 큐의 맨 앞 항목은
+                                   # (뷰 §5의 "현재 생산중" 표기 목적) 사람이 트리거하기 전까지
+                                   # "다음에 처리될 작업"을 의미한다.
 ```
 
 ## 4. 컨트롤러 (`controller/production_line_controller.py`)

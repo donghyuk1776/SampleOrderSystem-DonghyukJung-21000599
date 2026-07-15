@@ -1,17 +1,25 @@
 """메인 메뉴 콘솔 루프."""
 from src.controller.order_controller import OrderController
+from src.controller.production_line_controller import ProductionLineController
 from src.controller.sample_controller import SampleController
 from src.view.order_view import OrderView
+from src.view.production_line_view import ProductionLineView
 from src.view.sample_view import SampleView
 
 
 class MainMenuView:
     def __init__(self, sample_controller: SampleController = None,
-                 order_controller: OrderController = None):
+                 order_controller: OrderController = None,
+                 production_line_controller: ProductionLineController = None):
         self._sample_controller = sample_controller or SampleController()
         self._sample_view = SampleView(self._sample_controller)
-        self._order_controller = order_controller or OrderController()
+        self._production_line_controller = production_line_controller or ProductionLineController()
+        if order_controller is not None:
+            self._order_controller = order_controller
+        else:
+            self._order_controller = OrderController(production_queue=self._production_line_controller)
         self._order_view = OrderView(self._order_controller)
+        self._production_line_view = ProductionLineView(self._production_line_controller)
 
     def run(self) -> None:
         while True:
@@ -26,7 +34,7 @@ class MainMenuView:
             print("3. 주문승인/거절")
             print("4. 모니터링        (Phase 5 예정)")
             print("5. 출고처리        (Phase 4 예정)")
-            print("6. 생산라인        (Phase 3 예정)")
+            print("6. 생산라인")
             print("0. 종료")
             choice = input("> ").strip()
 
@@ -36,7 +44,9 @@ class MainMenuView:
                 self._order_view.run_create_order()
             elif choice == "3":
                 self._order_view.run_approval()
-            elif choice in ("4", "5", "6"):
+            elif choice == "6":
+                self._production_line_view.run()
+            elif choice in ("4", "5"):
                 print("아직 준비 중입니다.")
             elif choice == "0":
                 print("프로그램을 종료합니다.")

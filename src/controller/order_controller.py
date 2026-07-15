@@ -14,9 +14,9 @@ class OrderController:
                  production_queue=None):
         self._order_repository = order_repository or OrderRepository()
         self._sample_repository = sample_repository or SampleRepository()
-        # Phase 3의 ProductionLineController가 아직 없으므로, 재고 부족 시 생산 등록을 위한
-        # 최소 연동 지점만 마련한다. enqueue(order) 메서드를 가진 객체가 주입되면 호출하고,
-        # 없으면 아무 것도 하지 않는다.
+        # 재고 부족 시 생산 등록을 위한 연동 지점. enqueue(order, shortage) 메서드를 가진
+        # 객체(Phase 3의 ProductionLineController)가 주입되면 호출하고, 없으면 아무 것도 하지
+        # 않는다.
         self._production_queue = production_queue
 
     def create_order(self, sample_id: str, customer_name: str, quantity) -> Order:
