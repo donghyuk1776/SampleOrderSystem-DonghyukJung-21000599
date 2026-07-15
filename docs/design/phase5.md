@@ -29,6 +29,9 @@ tests/
 
 - `count_by_status()`: `REJECTED`를 제외한 각 상태별 주문 수를 dict로 반환
   (`{"RESERVED": n, "CONFIRMED": n, "PRODUCING": n, "RELEASE": n}`)
+- `orders_by_status()`: `REJECTED`를 제외한 각 상태별 주문ID 목록을 dict로 반환
+  (`{"RESERVED": [order_id, ...], ...}`) — `docs/FEATURES/monitoring.md` "주문 목록/수를
+  확인한다" 요구사항 중 "목록"에 해당하는 부분을 구현한다.
 - `stock_status()`: 시료별로 아래 기준에 따라 상태 라벨을 계산해 반환
   - **재고 대비 기준 정의** (설계 확정 사항): 해당 시료의 미출고 수요 = 상태가 `RESERVED` +
     `PRODUCING` + `CONFIRMED`인 주문의 수량 합계
@@ -40,7 +43,11 @@ tests/
 
 ```
 ==== 모니터링 ====
-[주문량] RESERVED: n / CONFIRMED: n / PRODUCING: n / RELEASE: n
+[주문량]
+  RESERVED: n건 (주문ID, 주문ID, ...)
+  CONFIRMED: n건 (...)
+  PRODUCING: n건 (...)
+  RELEASE: n건 (...)
 
 [재고량]
 시료ID / 이름 / 재고수량 / 상태(여유/부족/고갈)

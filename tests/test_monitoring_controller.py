@@ -108,6 +108,48 @@ def test_count_by_status_empty_when_no_orders(controller):
 
 
 # ---------------------------------------------------------------------------
+# orders_by_status
+# ---------------------------------------------------------------------------
+
+def test_orders_by_status_matches_actual_data(controller, order_repository):
+    order_repository.add(make_order("O001", OrderStatus.RESERVED))
+    order_repository.add(make_order("O002", OrderStatus.RESERVED))
+    order_repository.add(make_order("O003", OrderStatus.CONFIRMED))
+    order_repository.add(make_order("O004", OrderStatus.PRODUCING))
+    order_repository.add(make_order("O005", OrderStatus.RELEASE))
+
+    result = controller.orders_by_status()
+
+    assert result == {
+        "RESERVED": ["O001", "O002"],
+        "CONFIRMED": ["O003"],
+        "PRODUCING": ["O004"],
+        "RELEASE": ["O005"],
+    }
+
+
+def test_orders_by_status_excludes_rejected(controller, order_repository):
+    order_repository.add(make_order("O001", OrderStatus.RESERVED))
+    order_repository.add(make_order("O002", OrderStatus.REJECTED))
+
+    result = controller.orders_by_status()
+
+    assert result["RESERVED"] == ["O001"]
+    assert "REJECTED" not in result
+
+
+def test_orders_by_status_empty_when_no_orders(controller):
+    result = controller.orders_by_status()
+
+    assert result == {
+        "RESERVED": [],
+        "CONFIRMED": [],
+        "PRODUCING": [],
+        "RELEASE": [],
+    }
+
+
+# ---------------------------------------------------------------------------
 # stock_status
 # ---------------------------------------------------------------------------
 

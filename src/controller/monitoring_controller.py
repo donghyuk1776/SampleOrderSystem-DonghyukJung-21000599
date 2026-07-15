@@ -30,6 +30,14 @@ class MonitoringController:
             for status in _COUNTED_STATUSES
         }
 
+    def orders_by_status(self) -> dict:
+        """REJECTED를 제외한 각 상태별 주문ID 목록을 dict로 반환한다."""
+        orders = self._order_repository.get_all()
+        return {
+            status.value: [o.order_id for o in orders if o.status == status]
+            for status in _COUNTED_STATUSES
+        }
+
     def stock_status(self) -> list:
         orders = self._order_repository.get_all()
         samples = self._sample_repository.get_all()

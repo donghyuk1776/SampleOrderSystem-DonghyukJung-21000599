@@ -10,12 +10,15 @@ class MonitoringView:
     def run(self) -> None:
         while True:
             status_counts = self._controller.count_by_status()
+            orders_by_status = self._controller.orders_by_status()
             stock_statuses = self._controller.stock_status()
 
             print(colors.header("\n==== 모니터링 ===="))
-            counts_line = " / ".join(
-                f"{colors.status_text(status)}: {count}" for status, count in status_counts.items())
-            print(f"[주문량] {counts_line}")
+            print("[주문량]")
+            for status, count in status_counts.items():
+                order_ids = orders_by_status.get(status, [])
+                ids_text = ", ".join(order_ids) if order_ids else "-"
+                print(f"  {colors.status_text(status)}: {count}건 ({ids_text})")
 
             print("\n[재고량]")
             if not stock_statuses:
