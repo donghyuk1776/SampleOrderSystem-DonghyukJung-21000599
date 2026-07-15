@@ -52,12 +52,12 @@ compliance-verifier(Clean Code/컴플라이언스)**.
 
 | Phase | 기능 | 설계 문서 | Verify Harness | 커밋 | 고객 승인 |
 |---|---|---|---|---|---|
-| 1 | 프로젝트 골격 + 시료 관리 | [phase1.md](./docs/design/phase1.md) | ✅ 통과 | `8c5ad7f` | [x] 승인 (2026-07-15) |
-| 2 | 시료 주문 + 주문 승인/거절 | [phase2.md](./docs/design/phase2.md) | ✅ 통과 | `5f6c975` | [x] 승인 (2026-07-15) |
-| 3 | 생산라인 | [phase3.md](./docs/design/phase3.md) | ✅ 통과 | `bbf3dfc` | [x] 승인 (2026-07-15) |
-| 4 | 출고처리 | [phase4.md](./docs/design/phase4.md) | ✅ 통과 | `72bd0d0` | [x] 승인 (2026-07-15) |
-| 5 | 모니터링 | [phase5.md](./docs/design/phase5.md) | ✅ 통과 | `2ec632e` | [x] 승인 (2026-07-15) |
-| 6 | 통합 도구(데이터 모니터링/Dummy 데이터 생성) 및 마무리 | [phase6.md](./docs/design/phase6.md) | ✅ 통과 | `a4ab105` | [x] 승인 (2026-07-15) |
+| 1 | 프로젝트 골격 + 시료 관리 | [phase1.md](./docs/design/phase1.md) | ✅ 통과 | `8c5ad7f` | [o] 승인 (2026-07-15) |
+| 2 | 시료 주문 + 주문 승인/거절 | [phase2.md](./docs/design/phase2.md) | ✅ 통과 | `5f6c975` | [o] 승인 (2026-07-15) |
+| 3 | 생산라인 | [phase3.md](./docs/design/phase3.md) | ✅ 통과 | `bbf3dfc` | [o] 승인 (2026-07-15) |
+| 4 | 출고처리 | [phase4.md](./docs/design/phase4.md) | ✅ 통과 | `72bd0d0` | [o] 승인 (2026-07-15) |
+| 5 | 모니터링 | [phase5.md](./docs/design/phase5.md) | ✅ 통과 | `2ec632e` | [o] 승인 (2026-07-15) |
+| 6 | 통합 도구(데이터 모니터링/Dummy 데이터 생성) 및 마무리 | [phase6.md](./docs/design/phase6.md) | ✅ 통과 | `a4ab105` | [o] 승인 (2026-07-15) |
 
 > 고객 승인: 각 Phase의 설계 문서(`docs/design/phaseN.md`) "실행 및 수동 테스트 방법
 > (고객님용)" 절과 [PLAN.md](./PLAN.md)의 "고객님이 확인할 부분"에 따라 담당자가 직접
