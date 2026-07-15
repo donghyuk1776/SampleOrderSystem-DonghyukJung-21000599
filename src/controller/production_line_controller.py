@@ -55,12 +55,20 @@ class ProductionLineController:
         sample = self._sample_repository.find_by_id(job.sample_id)
         if sample is None:
             raise ProductionLineError(f"존재하지 않는 시료ID입니다: {job.sample_id}")
-        sample.stock_quantity += job.actual_quantity
-        self._sample_repository.update(sample)
 
         order = self._order_repository.find_by_id(job.order_id)
         if order is not None and order.status == OrderStatus.PRODUCING:
+            # 생산된 만큼 재고를 늘리되, 이 주문에 예약된 수량(order.quantity)은 그만큼
+            # 다시 차감해 최종 재고에 반영한다 - 재고 충분 케이스(OrderController.approve())가
+            # 승인 시점에 즉시 주문수량을 차감하는 것과 동일하게, 이 주문은 "충족되었다"는
+            # 상태(CONFIRMED)가 되는 시점에 재고에서 소진되어야 한다. 남는 차이
+            # (actual_quantity - order.quantity)는 수율 손실을 감안해 더 생산한 여유분으로,
+            # 다른 주문에 쓸 수 있는 재고로 남는다.
+            sample.stock_quantity += job.actual_quantity - order.quantity
             order.status = OrderStatus.CONFIRMED
             self._order_repository.update(order)
+        else:
+            sample.stock_quantity += job.actual_quantity
+        self._sample_repository.update(sample)
 
         return job

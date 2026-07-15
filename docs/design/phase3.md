@@ -9,7 +9,9 @@
 
 - Phase 2에서 `PRODUCING`으로 전환된 주문을 생산 큐(FIFO)에서 실제로 처리한다.
 - 실생산량/총생산시간을 계산하고, 생산 현황과 대기열을 조회할 수 있다.
-- 생산이 완료되면 주문 상태 `PRODUCING -> CONFIRMED`로 전환하고 재고에 반영한다.
+- 생산이 완료되면 주문 상태 `PRODUCING -> CONFIRMED`로 전환하고, 재고를 `+= 실생산량 - 주문수량`
+  으로 갱신한다 (재고 충분 케이스의 승인 즉시 차감과 동일하게, CONFIRMED가 되는 시점에 주문
+  수량만큼 재고에서 소진되어야 한다 — `docs/FEATURES/production-line.md` §2 참고).
 
 ## 2. 디렉터리 추가분
 
@@ -58,8 +60,15 @@ class ProductionJob:
 - `process_next()` 또는 `process_job(order_id)` (콘솔 메뉴에서 "생산 진행/완료 처리" 트리거로
   호출; 자동 타이머는 사용하지 않고 사람이 메뉴에서 진행시키는 방식으로 구현):
   - 큐 맨 앞(FIFO) 작업을 꺼내 처리
-  - `SampleRepository`의 재고에 `actual_quantity`만큼 증가
-  - 해당 `order_id`의 주문 상태를 `PRODUCING -> CONFIRMED`로 변경
+  - 해당 `order_id`의 주문을 조회해 `PRODUCING` 상태인 경우: `SampleRepository`의 재고를
+    `actual_quantity - order.quantity`만큼 증감시키고(즉, 생산량은 더하고 이 주문이 소진하는
+    수량은 뺀다), 주문 상태를 `CONFIRMED`로 변경
+    - (버그 수정 이력) 최초 구현에서는 `actual_quantity`만 더하고 `order.quantity`를 빼지
+      않아, 생산을 거쳐 출고까지 완료된 주문의 수량이 재고에서 전혀 소진되지 않는
+      재고 계산 오류가 있었다. 재고 충분 케이스(승인 즉시 `order.quantity` 차감)와 동일한
+      시점(= CONFIRMED 전환 시점)에 소진되도록 수정했다.
+    - 주문을 찾지 못했거나 이미 다른 사유로 `PRODUCING`이 아니게 된 경우(방어적 케이스)는
+      `actual_quantity`만 재고에 더한다 (어떤 주문에도 소진되지 않았으므로 전량 재고로 남는다).
   - 큐에서 제거
 
 > 참고: PRD/기능 명세에는 생산이 "자동으로 완료되는 시점"이 명시돼 있지 않으므로, Phase 3에서는

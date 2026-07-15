@@ -114,8 +114,9 @@ def test_full_scenario_register_order_produce_ship_monitor(
     reloaded_large_order = order_repository.find_by_id(large_order.order_id)
     assert reloaded_large_order.status == OrderStatus.CONFIRMED
 
+    # 기존 재고 6 + 생산량 5 - 주문수량 10 == 1 (주문에 소진되고 남는 수율 손실 버퍼만 재고로 남음)
     reloaded_sample_after_production = sample_repository.find_by_id("S001")
-    assert reloaded_sample_after_production.stock_quantity == 6 + 5  # == 11
+    assert reloaded_sample_after_production.stock_quantity == 6 + 5 - 10 == 1
 
     # 4. 두 CONFIRMED 주문 모두 출고 처리 -> RELEASE
     confirmed_before_shipment = shipment_controller.list_confirmed()
@@ -140,8 +141,8 @@ def test_full_scenario_register_order_produce_ship_monitor(
     assert len(stock_statuses) == 1
     stock_status = stock_statuses[0]
     assert stock_status.sample_id == "S001"
-    # 출고된 물량은 더 이상 미출고 수요가 아니므로, 남은 재고(11) 전체가 "여유"로 표시된다.
-    assert stock_status.stock_quantity == 11
+    # 출고된 물량은 더 이상 미출고 수요가 아니므로, 남은 재고(1) 전체가 "여유"로 표시된다.
+    assert stock_status.stock_quantity == 1
     assert stock_status.status_label == "여유"
 
 

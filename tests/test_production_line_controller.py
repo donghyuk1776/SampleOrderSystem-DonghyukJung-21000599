@@ -211,8 +211,10 @@ def test_process_next_on_already_empty_queue_after_draining_returns_none(control
 
 def test_process_next_transitions_order_status_and_increases_stock(
         controller, sample_repository, order_repository):
+    # 재고 0에서 부족분 5를 충당하려면 주문수량도 5여야 실제 승인 흐름과 일치한다
+    # (shortage_quantity = order.quantity - stock_quantity).
     register_sample(sample_repository, avg_production_time=2.5, yield_rate=0.9, stock_quantity=0)
-    order = register_order(order_repository, "O001", quantity=10, status=OrderStatus.PRODUCING)
+    order = register_order(order_repository, "O001", quantity=5, status=OrderStatus.PRODUCING)
 
     job = controller.enqueue(order, shortage_quantity=5)  # actual_quantity == 6
 
@@ -221,20 +223,24 @@ def test_process_next_transitions_order_status_and_increases_stock(
     reloaded_order = order_repository.find_by_id("O001")
     assert reloaded_order.status == OrderStatus.CONFIRMED
 
+    # 생산된 6개 중 주문수량 5개는 이 주문을 충족하는 데 쓰이고, 수율 손실을 감안해 더
+    # 생산한 나머지 1개만 재고로 남는다 (0 + 6 - 5 == 1).
     reloaded_sample = sample_repository.find_by_id("S001")
-    assert reloaded_sample.stock_quantity == job.actual_quantity == 6
+    assert reloaded_sample.stock_quantity == job.actual_quantity - order.quantity == 1
 
 
 def test_process_next_stock_increase_accumulates_over_existing_stock(
         controller, sample_repository, order_repository):
+    # 기존 재고 4 + 부족분 5를 충당하려면 주문수량은 9여야 한다.
     register_sample(sample_repository, yield_rate=0.9, stock_quantity=4)
-    order = register_order(order_repository, "O001", quantity=10, status=OrderStatus.PRODUCING)
+    order = register_order(order_repository, "O001", quantity=9, status=OrderStatus.PRODUCING)
     controller.enqueue(order, shortage_quantity=5)  # actual_quantity == 6
 
     controller.process_next()
 
+    # 기존 재고 4 + 생산량 6 - 주문수량 9 == 1
     reloaded_sample = sample_repository.find_by_id("S001")
-    assert reloaded_sample.stock_quantity == 4 + 6
+    assert reloaded_sample.stock_quantity == 4 + 6 - 9 == 1
 
 
 def test_process_next_does_not_change_status_if_order_not_producing(
@@ -292,8 +298,9 @@ def test_integration_approve_enqueues_and_process_next_completes_production(
     assert final_order.status == OrderStatus.CONFIRMED
 
     final_sample = sample_repository.find_by_id("S001")
-    # 기존 재고 4 (승인 시 부족 분기라 차감되지 않음) + 실생산량
-    assert final_sample.stock_quantity == 4 + processed_job.actual_quantity
+    # 기존 재고 4 (승인 시 부족 분기라 차감되지 않음) + 실생산량 - 주문수량(10)
+    # == 4 + 7 - 10 == 1: 주문에 소진되고 남는 수율 손실 버퍼만 재고로 남는다.
+    assert final_sample.stock_quantity == 4 + processed_job.actual_quantity - order.quantity == 1
 
 
 def test_integration_multiple_orders_processed_in_fifo_across_two_approvals(
