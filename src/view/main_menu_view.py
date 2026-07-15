@@ -1,8 +1,10 @@
 """메인 메뉴 콘솔 루프."""
+from src.controller.monitoring_controller import MonitoringController
 from src.controller.order_controller import OrderController
 from src.controller.production_line_controller import ProductionLineController
 from src.controller.sample_controller import SampleController
 from src.controller.shipment_controller import ShipmentController
+from src.view.monitoring_view import MonitoringView
 from src.view.order_view import OrderView
 from src.view.production_line_view import ProductionLineView
 from src.view.sample_view import SampleView
@@ -13,7 +15,8 @@ class MainMenuView:
     def __init__(self, sample_controller: SampleController = None,
                  order_controller: OrderController = None,
                  production_line_controller: ProductionLineController = None,
-                 shipment_controller: ShipmentController = None):
+                 shipment_controller: ShipmentController = None,
+                 monitoring_controller: MonitoringController = None):
         self._sample_controller = sample_controller or SampleController()
         self._sample_view = SampleView(self._sample_controller)
         self._production_line_controller = production_line_controller or ProductionLineController()
@@ -25,6 +28,8 @@ class MainMenuView:
         self._production_line_view = ProductionLineView(self._production_line_controller)
         self._shipment_controller = shipment_controller or ShipmentController()
         self._shipment_view = ShipmentView(self._shipment_controller)
+        self._monitoring_controller = monitoring_controller or MonitoringController()
+        self._monitoring_view = MonitoringView(self._monitoring_controller)
 
     def run(self) -> None:
         while True:
@@ -37,7 +42,7 @@ class MainMenuView:
             print("1. 시료관리")
             print("2. 시료주문")
             print("3. 주문승인/거절")
-            print("4. 모니터링        (Phase 5 예정)")
+            print("4. 모니터링")
             print("5. 출고처리")
             print("6. 생산라인")
             print("0. 종료")
@@ -54,7 +59,7 @@ class MainMenuView:
             elif choice == "6":
                 self._production_line_view.run()
             elif choice == "4":
-                print("아직 준비 중입니다.")
+                self._monitoring_view.run()
             elif choice == "0":
                 print("프로그램을 종료합니다.")
                 return
