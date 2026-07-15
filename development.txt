@@ -1,0 +1,29 @@
+아래 4 가지 Github repository 참고하여 PoC 코드 활용하기
+필요에 따라 아래 4 가지 참고하여 코드 프로젝트 내부 Skills 등록
+
+1. MVC 스켈레톤 코드: Model, Controller, View 패키지 구조와 역할 분리 완성
+- ConsoleMVC-DonghyukJung-21000599
+- https://github.com/donghyuk1776/ConsoleMVC-DonghyukJung-21000599.git
+
+2. 데이터 영속성 (Consistency) 처리: JSON 방식으로 데이터를 저장하고 불러오는 구조를 구현하고, CRUD 포함
+- DataPersistence-DonghyukJung-21000599
+- https://github.com/donghyuk1776/DataPersistence-DonghyukJung-21000599.git
+
+3. 데이터 모니터링 Tool: 현재 저장된 데이터 상태를 콘솔에서 실시간 조회할 수 있는 관리자 도구
+- DataMonitor-DonghyukJung-21000599
+- https://github.com/donghyuk1776/DataMonitor-DonghyukJung-21000599.git
+
+4. Dummy 데이터 생성 Tool: Test를 위한 Dummy Data를 생성하는 도구, Dummay Data는 연결된 DB에 추가
+- DummyDataGenerator-DonghyukJung-21000599
+- https://github.com/donghyuk1776/DummyDataGenerator-DonghyukJung-21000599.git
+
+구현 시 중요한 점
+0. Python 언어로 작성
+1. CLAUDE.md, PRD.md 등의 문서 관리
+2. Verify Harness  도입
+- SubAgent1: 문서 정합성 검증
+- SubAgent2: AI Action (코드 작성)
+- SubAgent3: Test Verify
+- SubAgent4: Compliance Verify
+3. Test 코드 작성
+4. Clean Code 작성
