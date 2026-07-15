@@ -2,15 +2,18 @@
 from src.controller.order_controller import OrderController
 from src.controller.production_line_controller import ProductionLineController
 from src.controller.sample_controller import SampleController
+from src.controller.shipment_controller import ShipmentController
 from src.view.order_view import OrderView
 from src.view.production_line_view import ProductionLineView
 from src.view.sample_view import SampleView
+from src.view.shipment_view import ShipmentView
 
 
 class MainMenuView:
     def __init__(self, sample_controller: SampleController = None,
                  order_controller: OrderController = None,
-                 production_line_controller: ProductionLineController = None):
+                 production_line_controller: ProductionLineController = None,
+                 shipment_controller: ShipmentController = None):
         self._sample_controller = sample_controller or SampleController()
         self._sample_view = SampleView(self._sample_controller)
         self._production_line_controller = production_line_controller or ProductionLineController()
@@ -20,6 +23,8 @@ class MainMenuView:
             self._order_controller = OrderController(production_queue=self._production_line_controller)
         self._order_view = OrderView(self._order_controller)
         self._production_line_view = ProductionLineView(self._production_line_controller)
+        self._shipment_controller = shipment_controller or ShipmentController()
+        self._shipment_view = ShipmentView(self._shipment_controller)
 
     def run(self) -> None:
         while True:
@@ -33,7 +38,7 @@ class MainMenuView:
             print("2. 시료주문")
             print("3. 주문승인/거절")
             print("4. 모니터링        (Phase 5 예정)")
-            print("5. 출고처리        (Phase 4 예정)")
+            print("5. 출고처리")
             print("6. 생산라인")
             print("0. 종료")
             choice = input("> ").strip()
@@ -44,9 +49,11 @@ class MainMenuView:
                 self._order_view.run_create_order()
             elif choice == "3":
                 self._order_view.run_approval()
+            elif choice == "5":
+                self._shipment_view.run()
             elif choice == "6":
                 self._production_line_view.run()
-            elif choice in ("4", "5"):
+            elif choice == "4":
                 print("아직 준비 중입니다.")
             elif choice == "0":
                 print("프로그램을 종료합니다.")

@@ -57,7 +57,11 @@ tests/
 - `CLAUDE.md`/`PRD.md`/`docs/FEATURES/*.md`/`docs/design/*.md`가 최종 구현과 어긋나는 부분이
   없는지 점검하고 필요한 부분을 갱신한다 (Verify Harness의 SubAgent1 - 문서 정합성 검증 역할).
 - Clean Code 관점에서 중복 로직/불필요한 추상화가 없는지 점검한다 (SubAgent4 - Compliance
-  Verify).
+  Verify). Phase 2~4 compliance 검증에서 넘어온 백로그 항목을 포함한다:
+  - `sample_controller.py`/`order_controller.py`/`shipment_controller.py`에 각각 중복
+    정의된 `ValidationError`를 공용 `controller/errors.py`로 추출할지 검토
+  - `sample_view.py`(재입력 루프)와 `order_view.py`/`shipment_view.py`(파싱 실패 시 메뉴로
+    복귀)의 숫자/입력 오류 처리 UX 패턴 통일 여부 검토
 - 테스트 커버리지가 Phase 1~5의 각 설계 문서에 명시한 테스트 계획을 모두 포함하는지 확인한다.
 
 ## 7. 실행 및 수동 테스트 방법 (고객님용)

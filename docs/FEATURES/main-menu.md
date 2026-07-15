@@ -10,12 +10,14 @@
 ## 요구사항
 
 1. 콘솔 시작 시 메인 메뉴를 표시한다.
-2. 메인 메뉴는 아래 5개 하위 메뉴로 진입 가능해야 한다.
+2. 메인 메뉴는 아래 6개 하위 메뉴로 진입 가능해야 한다. "주문(접수/승인/거절)"은 실제 구현에서
+   "시료주문"(접수)과 "주문승인/거절"을 별도 메뉴 항목으로 분리해 제공한다.
 
    | 메뉴 | 설명 | 관련 문서 |
    |---|---|---|
    | 시료관리 | 새로운 시료 등록, 목록 조회, 이름 검색 | [sample-management.md](./sample-management.md) |
-   | 주문(접수/승인/거절) | 고객 주문 접수 및 승인·거절 처리 | [sample-order.md](./sample-order.md), [order-approval-rejection.md](./order-approval-rejection.md) |
+   | 시료주문 | 고객 주문 접수 (RESERVED 생성) | [sample-order.md](./sample-order.md) |
+   | 주문승인/거절 | 생산라인 담당자의 주문 승인·거절 처리 | [order-approval-rejection.md](./order-approval-rejection.md) |
    | 모니터링 | 상태별 주문 수 및 시료별 재고 현황 확인 | [monitoring.md](./monitoring.md) |
    | 출고처리 | CONFIRMED 상태 주문에 대해 출고 실행 | [shipment.md](./shipment.md) |
    | 생산라인 | 현재 생산 중인 시료 및 대기 중인 생산 큐 확인 | [production-line.md](./production-line.md) |

@@ -24,6 +24,9 @@ tests/
 ```
 
 - 별도의 Model/Repository 없이 Phase 2의 `Order`/`OrderRepository`를 재사용한다.
+- 예외 클래스도 별도로 만들지 않고 Phase 2의 `order_controller.ValidationError`를 그대로
+  import하여 재사용한다 (컨트롤러 간 예외 계약을 통일하기 위함. 컨트롤러가 늘어나면 Phase 6
+  품질 정리 단계에서 공용 `errors.py`로 추출을 검토한다).
 
 ## 3. 컨트롤러 (`controller/shipment_controller.py`)
 
