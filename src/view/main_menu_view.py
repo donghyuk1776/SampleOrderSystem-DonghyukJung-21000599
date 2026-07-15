@@ -9,6 +9,7 @@ from src.view.order_view import OrderView
 from src.view.production_line_view import ProductionLineView
 from src.view.sample_view import SampleView
 from src.view.shipment_view import ShipmentView
+from src.view import colors
 
 
 class MainMenuView:
@@ -37,7 +38,7 @@ class MainMenuView:
             total_count = len(samples)
             total_stock = sum(s.stock_quantity for s in samples)
 
-            print("\n==== 반도체 시료 생산 주문 관리 시스템 ====")
+            print(colors.header("\n==== 반도체 시료 생산 주문 관리 시스템 ===="))
             print(f"전체 등록 시료 수: {total_count}개 / 전체 재고 합계: {total_stock}개")
             print("1. 시료관리")
             print("2. 시료주문")
@@ -45,7 +46,7 @@ class MainMenuView:
             print("4. 모니터링")
             print("5. 출고처리")
             print("6. 생산라인")
-            print("0. 종료")
+            print(colors.warning("0. 종료"))
             choice = input("> ").strip()
 
             if choice == "1":

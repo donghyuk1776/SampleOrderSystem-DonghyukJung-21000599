@@ -12,6 +12,7 @@
 from src.repository.order_repository import OrderRepository
 from src.repository.production_queue_repository import ProductionQueueRepository
 from src.repository.sample_repository import SampleRepository
+from src.view import colors
 
 
 class DataMonitor:
@@ -29,7 +30,7 @@ class DataMonitor:
 
     def _render_samples(self) -> None:
         samples = self._sample_repository.get_all()
-        print("\n==== 시료 목록 (samples.json) ====")
+        print(colors.header("\n==== 시료 목록 (samples.json) ===="))
         if not samples:
             print("등록된 시료가 없습니다.")
             return
@@ -40,18 +41,18 @@ class DataMonitor:
 
     def _render_orders(self) -> None:
         orders = self._order_repository.get_all()
-        print("\n==== 주문 목록 (orders.json) ====")
+        print(colors.header("\n==== 주문 목록 (orders.json) ===="))
         if not orders:
             print("등록된 주문이 없습니다.")
             return
         print(f"{'주문ID':<10}{'시료ID':<10}{'고객명':<15}{'수량':<10}{'상태':<12}")
         for o in orders:
             print(f"{o.order_id:<10}{o.sample_id:<10}{o.customer_name:<15}"
-                  f"{o.quantity:<10}{o.status.value:<12}")
+                  f"{o.quantity:<10}{colors.status_text(f'{o.status.value:<12}')}")
 
     def _render_production_queue(self) -> None:
         jobs = self._production_queue_repository.get_all()
-        print("\n==== 생산 큐 (production_queue.json) ====")
+        print(colors.header("\n==== 생산 큐 (production_queue.json) ===="))
         if not jobs:
             print("대기 중인 생산 작업이 없습니다.")
             return

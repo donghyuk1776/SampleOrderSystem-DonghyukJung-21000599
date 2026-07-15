@@ -1,6 +1,7 @@
 """출고처리 화면."""
 from src.controller.order_controller import ValidationError
 from src.controller.shipment_controller import ShipmentController
+from src.view import colors
 
 
 class ShipmentView:
@@ -10,7 +11,7 @@ class ShipmentView:
     def run(self) -> None:
         while True:
             confirmed_orders = self._controller.list_confirmed()
-            print("\n==== 출고처리 ====")
+            print(colors.header("\n==== 출고처리 ===="))
             if not confirmed_orders:
                 print("출고 대상(CONFIRMED) 주문이 없습니다.")
             else:
@@ -32,6 +33,6 @@ class ShipmentView:
         order_id = input("출고할 주문ID: ").strip()
         try:
             order = self._controller.ship(order_id)
-            print(f"주문 '{order_id}'가 출고되었습니다. (전환된 상태: {order.status.value})")
+            print(f"주문 '{order_id}'가 출고되었습니다. (전환된 상태: {colors.status_text(order.status.value)})")
         except ValidationError as e:
-            print(f"출고 실패: {e}")
+            print(colors.error(f"출고 실패: {e}"))

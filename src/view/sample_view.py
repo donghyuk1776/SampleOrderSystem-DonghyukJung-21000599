@@ -1,5 +1,6 @@
 """시료관리 화면 (등록/조회/검색)."""
 from src.controller.sample_controller import SampleController, ValidationError
+from src.view import colors
 
 
 class SampleView:
@@ -8,7 +9,7 @@ class SampleView:
 
     def run(self) -> None:
         while True:
-            print("\n==== 시료 관리 ====")
+            print(colors.header("\n==== 시료 관리 ===="))
             print("1. 시료 등록")
             print("2. 시료 조회")
             print("3. 시료 검색")
@@ -34,9 +35,9 @@ class SampleView:
 
         try:
             self._controller.register(sample_id, name, avg_production_time, yield_rate)
-            print(f"시료 '{sample_id}'가 등록되었습니다.")
+            print(colors.success(f"시료 '{sample_id}'가 등록되었습니다."))
         except ValidationError as e:
-            print(f"등록 실패: {e}")
+            print(colors.error(f"등록 실패: {e}"))
 
     def _read_float(self, prompt: str) -> float:
         while True:
@@ -44,7 +45,7 @@ class SampleView:
             try:
                 return float(raw)
             except ValueError:
-                print("숫자를 입력해 주세요.")
+                print(colors.warning("숫자를 입력해 주세요."))
 
     def _list_all(self) -> None:
         samples = self._controller.list_all()

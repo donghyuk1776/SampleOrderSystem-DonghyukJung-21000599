@@ -1,5 +1,6 @@
 """생산라인 현황/대기열 화면."""
 from src.controller.production_line_controller import ProductionLineController, ProductionLineError
+from src.view import colors
 
 
 class ProductionLineView:
@@ -9,7 +10,7 @@ class ProductionLineView:
     def run(self) -> None:
         while True:
             pending_jobs = self._controller.list_pending()
-            print("\n==== 생산라인 ====")
+            print(colors.header("\n==== 생산라인 ===="))
             print("[현재 생산중]")
             if not pending_jobs:
                 print("생산 중인 시료가 없습니다.")
@@ -40,13 +41,13 @@ class ProductionLineView:
         try:
             job = self._controller.process_next()
         except ProductionLineError as e:
-            print(f"생산 완료 처리 실패: {e}")
+            print(colors.error(f"생산 완료 처리 실패: {e}"))
             return
         if job is None:
             print("대기 중인 생산 작업이 없습니다.")
             return
-        print(f"주문 '{job.order_id}' 생산이 완료되었습니다. "
-              f"(시료ID: {job.sample_id}, 실생산량: {job.actual_quantity})")
+        print(colors.success(f"주문 '{job.order_id}' 생산이 완료되었습니다. "
+              f"(시료ID: {job.sample_id}, 실생산량: {job.actual_quantity})"))
 
     def _print_job(self, job) -> None:
         print(f"주문ID:{job.order_id} / 시료ID:{job.sample_id} / "
