@@ -51,13 +51,16 @@ class Order:
     status: OrderStatus = OrderStatus.RESERVED
 ```
 
-- `order_id`는 컨트롤러에서 자동 생성 (예: UUID 또는 증가 시퀀스, JSON에 마지막 시퀀스 저장)
+- `order_id`는 `OrderRepository.next_order_id()`가 `len(get_all())+1`을 `"O001"` 형식으로
+  포맷하여 자동 생성한다 (별도 시퀀스 파일 없음). 주문 삭제 기능은 없다는 전제이며, 향후 삭제
+  기능이 추가되면 ID 재사용/충돌 방지를 위해 별도 시퀀스 저장 방식으로 변경이 필요하다.
 
 ## 4. 컨트롤러 (`controller/order_controller.py`)
 
 - `create_order(sample_id, customer_name, quantity)`:
-  - 검증: `sample_id`가 `SampleRepository`에 존재하는지, `quantity >= 1` 정수인지, `customer_name`
-    공백 아님
+  - 검증: `sample_id`가 `SampleRepository`에 존재하는지, `quantity >= 1` 정수인지(`bool`은
+    정수로 취급하지 않고 거부), `customer_name` 공백 아님
+  - `customer_name`은 앞뒤 공백을 제거(`strip()`)한 뒤 저장한다
   - 통과 시 `Order(status=RESERVED)` 생성 및 저장
 - `list_reserved()`: `RESERVED` 상태 주문만 반환 (승인/거절 화면용)
 - `approve(order_id)`:
@@ -68,8 +71,9 @@ class Order:
       [`ProductionLineController`](./phase3.md)에 생산 요청 등록(생산 큐 append), 상태
       `PRODUCING`으로 변경
       - Phase 2 시점에는 `ProductionLineController`가 아직 없으므로, 이 연동 지점은
-        인터페이스만 정의해두고(예: `production_queue.enqueue(order)`) Phase 3에서 실제 구현을
-        연결한다. Phase 2 완료 시점에는 최소한 "부족분 계산 + PRODUCING 전환 + 큐에 데이터가
+        인터페이스만 정의해두고(`production_queue.enqueue(order, shortage)` — 실생산량 계산식
+        `ceil(부족분/수율)`에 부족분이 필요하므로 `shortage`를 함께 전달) Phase 3에서 실제
+        구현을 연결한다. Phase 2 완료 시점에는 최소한 "부족분 계산 + PRODUCING 전환 + 큐에 데이터가
         쌓이는 것"까지 확인 가능해야 한다 (생산 완료 처리 자체는 Phase 3에서 확인).
   - 이미 `RESERVED`가 아닌 주문에 대한 재승인 시도는 에러 처리
 - `reject(order_id)`: `RESERVED`가 아니면 거부, 맞으면 상태 `REJECTED`로 변경
