@@ -215,6 +215,16 @@ def test_approve_nonexistent_order_id_raises_validation_error(controller):
         controller.approve("NOPE")
 
 
+def test_approve_tolerates_zero_o_typo_in_order_id(controller, sample_repository):
+    """사용자가 'O001'을 '0001'로 잘못 입력해도(0/O 혼동) 승인이 되어야 한다."""
+    register_sample(sample_repository, stock_quantity=10)
+    order = controller.create_order("S001", "Alice", 3)
+
+    result = controller.approve(order.order_id.replace("O", "0"))
+
+    assert result.status == OrderStatus.CONFIRMED
+
+
 def test_approve_order_with_deleted_sample_raises_validation_error(controller, sample_repository, order_repository):
     """시료가 등록된 이후 삭제된 경우에도(현재는 삭제 기능이 없어 직접 조작으로 재현)
     approve()가 크래시하지 않고 ValidationError로 안내해야 한다."""
@@ -277,3 +287,12 @@ def test_reject_confirmed_order_raises_validation_error(controller, sample_repos
 def test_reject_nonexistent_order_id_raises_validation_error(controller):
     with pytest.raises(ValidationError):
         controller.reject("NOPE")
+
+
+def test_reject_tolerates_zero_o_typo_in_order_id(controller, sample_repository):
+    register_sample(sample_repository, stock_quantity=10)
+    order = controller.create_order("S001", "Alice", 3)
+
+    result = controller.reject(order.order_id.replace("O", "0"))
+
+    assert result.status == OrderStatus.REJECTED

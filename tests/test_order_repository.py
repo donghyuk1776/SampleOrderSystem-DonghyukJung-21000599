@@ -58,6 +58,25 @@ def test_find_by_id(repo_path):
     assert repo.find_by_id("NOPE") is None
 
 
+@pytest.mark.parametrize("typo_id", ["0001", "o001", " O001 ", "0001 "])
+def test_find_by_id_tolerates_zero_o_typo_and_case(repo_path, typo_id):
+    """'O'(대문자 오)와 '0'(숫자 영)을 헷갈려 입력하는 실수를 보정해야 한다."""
+    repo = OrderRepository(repo_path)
+    repo.add(make_order(order_id="O001"))
+
+    found = repo.find_by_id(typo_id)
+
+    assert found is not None
+    assert found.order_id == "O001"
+
+
+def test_find_by_id_does_not_falsely_match_unrelated_id(repo_path):
+    repo = OrderRepository(repo_path)
+    repo.add(make_order(order_id="O001"))
+
+    assert repo.find_by_id("0002") is None
+
+
 def test_list_by_status_filters_correctly(repo_path):
     repo = OrderRepository(repo_path)
     repo.add(make_order(order_id="O001", status=OrderStatus.RESERVED))

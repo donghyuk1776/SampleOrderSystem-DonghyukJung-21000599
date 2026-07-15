@@ -92,6 +92,15 @@ def test_ship_removes_order_from_confirmed_list_after_shipping(controller, order
     assert controller.list_confirmed() == []
 
 
+def test_ship_tolerates_zero_o_typo_in_order_id(controller, order_repository):
+    """사용자가 'O001'을 '0001'로 잘못 입력해도(0/O 혼동) 출고가 되어야 한다."""
+    order_repository.add(make_order("O001", OrderStatus.CONFIRMED))
+
+    result = controller.ship("0001")
+
+    assert result.status == OrderStatus.RELEASE
+
+
 # ---------------------------------------------------------------------------
 # ship - rejection cases
 # ---------------------------------------------------------------------------

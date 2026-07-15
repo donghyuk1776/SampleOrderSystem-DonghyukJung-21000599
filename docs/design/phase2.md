@@ -20,7 +20,9 @@ src/
   model/
     order.py                     # Order 데이터 모델 (+ OrderStatus enum)
   repository/
-    order_repository.py          # Order CRUD (JSON 기반)
+    order_repository.py          # Order CRUD (JSON 기반). find_by_id는 사용자가 앞자리
+                                  # 'O'를 '0'으로 잘못 입력하는 실수를 보정한다(예: '0003'
+                                  # -> 'O003'), docs/FEATURES/order-approval-rejection.md 참고
   controller/
     order_controller.py          # 주문 접수/승인/거절 유스케이스
   view/
