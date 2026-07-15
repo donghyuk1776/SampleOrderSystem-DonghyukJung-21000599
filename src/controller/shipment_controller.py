@@ -1,7 +1,9 @@
 """출고 처리 유스케이스."""
-from src.controller.order_controller import ValidationError
+from src.controller.errors import ValidationError
 from src.model.order import OrderStatus
 from src.repository.order_repository import OrderRepository
+
+__all__ = ["ShipmentController", "ValidationError"]
 
 
 class ShipmentController:

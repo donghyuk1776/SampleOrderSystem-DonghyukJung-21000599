@@ -1,11 +1,10 @@
 """주문 접수/승인/거절 유스케이스."""
+from src.controller.errors import ValidationError
 from src.model.order import Order, OrderStatus
 from src.repository.order_repository import OrderRepository
 from src.repository.sample_repository import SampleRepository
 
-
-class ValidationError(Exception):
-    """사용자에게 보여줄 메시지를 담은 검증 실패 예외."""
+__all__ = ["OrderController", "ValidationError"]
 
 
 class OrderController:

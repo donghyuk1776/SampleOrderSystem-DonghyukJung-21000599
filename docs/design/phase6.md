@@ -41,9 +41,12 @@ tests/
 - 기존 `SampleRepository`/`OrderRepository`를 재사용해 더미 시료/주문을 생성한다 (직접 JSON을
   조작하지 않고 Phase 1~2에서 만든 Repository API를 통해 생성하여 검증 로직을 그대로 통과하도록
   한다).
-- 생성되는 시료의 수율은 0 초과 1 이하로 랜덤 생성한다.
+- 생성되는 시료의 수율은 0 초과 1 이하로 랜덤 생성한다. 실제 구현은 시연 편의상 0.5~1.0
+  구간만 사용한다(수율이 매우 낮은 극단적 케이스는 이 구간을 넓혀 실행해 확인).
 
-## 5. 통합 테스트 (`tests/test_end_to_end.py`)
+## 5. 테스트
+
+### 5.1 통합 테스트 (`tests/test_end_to_end.py`)
 
 - 임시 데이터 디렉터리를 사용해 아래 전체 시나리오를 하나의 테스트로 검증한다.
   1. 시료 등록
@@ -51,6 +54,16 @@ tests/
   3. 재고보다 많은 수량으로 주문 생성 후 승인 → `PRODUCING` → 생산 완료 처리 → `CONFIRMED`
   4. 두 `CONFIRMED` 주문 모두 출고 처리 → `RELEASE`
   5. 모니터링 집계 결과가 위 시나리오와 일치하는지 확인
+- `src/controller/errors.py`로 통합한 `ValidationError`가 `sample_controller`/
+  `order_controller`/`shipment_controller` 세 모듈에서 동일 객체로 재노출되는지 회귀 테스트로
+  확인한다.
+
+### 5.2 `tools/` 단위 테스트 (`tests/test_data_monitor.py`, `tests/test_dummy_data_generator.py`)
+
+- `tools/`는 두께가 얇은 wrapper이지만, 개발 원칙 3번(테스트 코드 작성)에 따라 최소 스모크
+  테스트를 둔다: `DataMonitor.render()`가 빈 데이터/실제 데이터에서 예외 없이 올바른 내용을
+  출력하는지, `dummy_data_generator`의 `parse_args`/`generate_samples`/`generate_orders`가
+  요청한 개수·유효 범위·재고충분/부족 두 케이스를 정확히 만족하는지 검증한다.
 
 ## 6. 문서/품질 정리
 

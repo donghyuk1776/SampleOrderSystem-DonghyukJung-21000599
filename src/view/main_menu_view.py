@@ -54,12 +54,12 @@ class MainMenuView:
                 self._order_view.run_create_order()
             elif choice == "3":
                 self._order_view.run_approval()
+            elif choice == "4":
+                self._monitoring_view.run()
             elif choice == "5":
                 self._shipment_view.run()
             elif choice == "6":
                 self._production_line_view.run()
-            elif choice == "4":
-                self._monitoring_view.run()
             elif choice == "0":
                 print("프로그램을 종료합니다.")
                 return

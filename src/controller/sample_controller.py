@@ -1,10 +1,9 @@
 """시료 등록/조회/검색 유스케이스 + 검증."""
+from src.controller.errors import ValidationError
 from src.model.sample import Sample
 from src.repository.sample_repository import SampleRepository
 
-
-class ValidationError(Exception):
-    """사용자에게 보여줄 메시지를 담은 검증 실패 예외."""
+__all__ = ["SampleController", "ValidationError"]
 
 
 class SampleController:
